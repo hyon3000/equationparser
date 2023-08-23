@@ -362,7 +362,7 @@ class unit{
 			else if(o==162)System.out.print("&= ");
 			else if(o==163)System.out.print("|= ");
 			else if(o==164)System.out.print("^= ");
-			else if(o==165)System.out.print("** ");
+			else if(o==165)System.out.print("**= ");
 			else if(o==171)System.out.print(", ");
 			else if(o==181)System.out.print("; ");
 		}
