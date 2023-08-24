@@ -1,7 +1,7 @@
 # equationparser
 String based equation calculation code written in Java
 
-It is written in a single file (program.java), so it is easy to port, and convert to other languages by using a very small number of libraries (ArrayList, HashMap).
+It is written in a single file (program.java), so it is easy to port, and convert to other languages by using a very small number of libraries (ArrayList).
 
 ## features
 It consists of an equation class that stores formulas and a program class that executes formulas.
@@ -59,6 +59,8 @@ log:1 or 2 arguments, The first argument is base of log, the second argument is 
 
 sqrt,ln,cbrt,abs,arg:1 argument
 
+gcd,lcm:2 argument
+
 conj:1 argument, conjugate value of complex
 
 min,max:no limit on the number of arguments, min/max value calculation
@@ -78,6 +80,8 @@ rand:1 argument, generate random value range between 0 and 1
 isnan:1 argument, Checks if a variable is NaN and returns true or false
 
 real,imag:1 argument
+
+isreal:1 argument, Checks if a variable is real number and returns true or false
 
 ### pre-defined value
 
