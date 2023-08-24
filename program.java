@@ -914,7 +914,7 @@ public class program{
 				else if(tmp.o==23) {//~
 					stacksize=stack1.size();
 					unit v1=stack1.get(stacksize-1); complex val=v1.c; if(val==null) val=get(v1.t);
-					stack1.set(stacksize-1,new unit(new complex((double)(~((long)v1.c.r)),0),null,null));
+					stack1.set(stacksize-1,new unit(new complex((double)(~((long)val.r)),0),null,null));
 				}
 				else if(tmp.o==24) {//!
 					stacksize=stack1.size();
