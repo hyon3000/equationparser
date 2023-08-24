@@ -1,7 +1,7 @@
 package test;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+
 
 class complex{
 	double r,i;
@@ -19,25 +19,29 @@ class complex{
 		}
 		isbool=false;
 	}
-	String tostr() {
+	
+	String tostr(double res) {
 		if(Double.isInfinite(r) || Double.isNaN(r)||Double.isInfinite(r) || Double.isNaN(r)) return "NaN";
 		String ret="";
 		if(isbool) {if(r!=0) return "true"; else return "false";}
-		if(r!=0) ret+=Double.toString(r);
-		if(i==1) {if(r!=0) ret+="+i"; else ret="i";}
-		else if(i==-1) ret+="-i";
-		else if(i<0) ret+=Double.toString(i)+"i";
-		else if(i>0) {
-			if(r!=0) ret+="+"+Double.toString(i)+"i";
-			else ret+=Double.toString(i)+"i";
+		complex c=new complex(r,i);
+		double rr=(r>0?r:-r);double ii=(i>0?i:-i);
+		double res2=res*1e-2*(rr>ii?rr:ii);
+		if(-res2<r&&r<res2) c.r=0;
+		if(-res2<i&&i<res2) c.i=0;
+		if(c.r!=0) ret+=Double.toString(c.r);
+		if(c.i==1) {if(c.r!=0) ret+="+i"; else ret="i";}
+		else if(c.i==-1) ret+="-i";
+		else if(c.i<0) ret+=Double.toString(c.i)+"i";
+		else if(c.i>0) {
+			if(c.r!=0) ret+="+"+Double.toString(c.i)+"i";
+			else ret+=Double.toString(c.i)+"i";
 		}
 		if(ret.equals("")) ret=Double.toString(0);
 		return ret;
 	}
-	boolean istrue() {
-		if(r>1e-6||r<-1e-6||i>1e-6||i<-1e-6)return true;
-		else return false;
-	}
+
+	boolean istrue() {return r>1e-6||r<-1e-6||i>1e-6||i<-1e-6;}
 	boolean isequal(double res,complex a) {
 		double tr=(r>0?r:-r);double ti=(i>0?i:-i);
 		double ar=(a.r>0?a.r:-a.r);double ai=(a.i>0?a.i:-a.i);
@@ -67,6 +71,7 @@ class complex{
 			else return false;
 		}
 	}
+	boolean isreal() {return i<1e-6&&i>-1e-6;}
 	void store_add(complex a,complex b) {r=a.r+b.r;i=a.i+b.i;}
 	void store_add(complex a) {r+=a.r;i+=a.i;}
 	void store_add(complex a,double b) {r=a.r+b;i=a.i;}
@@ -81,7 +86,13 @@ class complex{
 		double t=b.r*b.r+b.i*b.i;r=(a*b.r)/t;i=(-a*b.i)/t;
 	}
 	void store_mod(complex a,complex b) throws Exception{
-		r=Math.IEEEremainder(a.r, b.r);i=Math.IEEEremainder(a.i, b.r);
+		if(a.isreal()&&b.isreal()) {r=a.r-Math.floor(a.r/b.r)*b.r;i=0;}
+		else {
+			double t=b.r*b.r+b.i*b.i;
+			double rt=Math.round((a.r*b.r+a.i*b.i)/t);
+			double it=Math.round((a.i*b.r-a.r*b.i)/t);
+			r=a.r-rt*b.r+it*b.i; i=a.i-it*b.r-rt*b.i;
+		}
 	}
 	complex floor() {return new complex(Math.floor(r),0);}
 	complex ceil() {return new complex(Math.ceil(r),0);}
@@ -307,6 +318,10 @@ class complex{
 	}
 	
 }
+class ints{
+	static int gcd(int a, int b) {if (b == 0) return a; else return gcd(b, a % b);}
+	static int lcm(int a, int b) {return (a * b) / gcd(a, b);}
+}
 class unit{
 	complex c;String t;Integer o;
 	ArrayList<complex> commalog=null;
@@ -316,72 +331,44 @@ class unit{
 		if(tmp.t==null) t=null;else t=new String(tmp.t);
 		if(tmp.o==null) o=null;else o=tmp.o;
 	}
-	void print() {
-		if(c!=null) System.out.print(c.tostr()+" ");
+	String tostr() throws Exception {
+		if(c!=null) return c.tostr(1e-9)+" ";
 		else if(o!=null){
-			if(o==-2) System.out.print("( ");
-			else if(o==-1)System.out.print(") ");
-			else if(o==1)System.out.print(t+" ");
-			else if(o==11)System.out.print("a++ ");
-			else if(o==12)System.out.print("a-- ");
-			else if(o==21)System.out.print("++a ");
-			else if(o==22)System.out.print("--a ");
-			else if(o==23)System.out.print("~ ");
-			else if(o==24)System.out.print("! ");
-			else if(o==25)System.out.print("-a ");
-			else if(o==26)System.out.print("+a ");
-			else if(o==31)System.out.print("** ");
-			else if(o==41)System.out.print("* ");
-			else if(o==42)System.out.print("/ ");
-			else if(o==43)System.out.print("% ");
-			else if(o==51)System.out.print("+ ");
-			else if(o==52)System.out.print("- ");
-			else if(o==61)System.out.print("<< ");
-			else if(o==62)System.out.print(">> ");
-			else if(o==71)System.out.print("< ");
-			else if(o==72)System.out.print("> ");
-			else if(o==81)System.out.print("== ");
-			else if(o==82)System.out.print("!= ");
-			else if(o==91)System.out.print("& ");
-			else if(o==101)System.out.print("^ ");
-			else if(o==111)System.out.print("| ");
-			else if(o==121)System.out.print("&& ");
-			else if(o==131)System.out.print("^^ ");
-			else if(o==141)System.out.print("|| ");
-			else if(o==151)System.out.print("? ");
-			else if(o==152)System.out.print(": ");
-			else if(o==153)System.out.print("?: ");
-			else if(o==154)System.out.print("= ");
-			else if(o==155)System.out.print("*= ");
-			else if(o==156)System.out.print("/= ");
-			else if(o==157)System.out.print("%= ");
-			else if(o==158)System.out.print("+= ");
-			else if(o==159)System.out.print("-= ");
-			else if(o==160)System.out.print("<<= ");
-			else if(o==161)System.out.print(">>= ");
-			else if(o==162)System.out.print("&= ");
-			else if(o==163)System.out.print("|= ");
-			else if(o==164)System.out.print("^= ");
-			else if(o==165)System.out.print("**= ");
-			else if(o==171)System.out.print(", ");
-			else if(o==181)System.out.print("; ");
+			if(o==-2) return "( "; else if(o==-1)return ") "; else if(o==1)return t+" "; else if(o==11)return "a++ ";
+			else if(o==12)return "a-- "; else if(o==21)return "++a "; else if(o==22)return "--a "; 
+			else if(o==23)return "~ "; else if(o==24)return "! "; else if(o==25)return "-a "; else if(o==26)return "+a ";
+			else if(o==31)return "** "; else if(o==41)return "* "; else if(o==42)return "/ "; else if(o==43)return "% ";
+			else if(o==51)return "+ "; else if(o==52)return "- "; else if(o==61)return "<< "; else if(o==62)return ">> ";
+			else if(o==71)return "< "; else if(o==72)return "> "; else if(o==81)return "== "; else if(o==82)return "!= "; 
+			else if(o==91)return "& "; else if(o==101)return "^ "; else if(o==111)return "| "; else if(o==121)return "&& ";
+			else if(o==131)return "^^ "; else if(o==141)return "|| "; else if(o==151)return "? "; 
+			else if(o==152)return ": "; else if(o==153)return "?: "; else if(o==154)return "= ";
+			else if(o==155)return "*= "; else if(o==156)return "/= "; else if(o==157)return "%= ";
+			else if(o==158)return "+= "; else if(o==159)return "-= "; else if(o==160)return "<<= ";
+			else if(o==161)return ">>= "; else if(o==162)return "&= "; else if(o==163)return "|= ";
+			else if(o==164)return "^= "; else if(o==165)return "**= "; else if(o==171)return ", ";
+			else if(o==181)return "; "; else throw new Exception("wrong equation-unknown token");
 		}
-		else System.out.print("#"+t+" ");
+		else return "#"+t+" ";
 	}
 }
 class equation{
 	ArrayList<unit> eq;
 	public equation(ArrayList<unit> q) {eq=q;}
-	public void print() {for(int i=0;i<eq.size();i++) eq.get(i).print();}
+	@Override
+	public String toString() {
+		try {String ret="";int s=eq.size(); for(int i=0;i<s;i++) ret+=eq.get(i).toString(); return ret;}
+		catch(Exception E) { return E.toString();}
+	}
 }
 public class program{
-	HashMap<String,complex> var=new HashMap<>();
+	ArrayList<String> vark=new ArrayList<>(); ArrayList<complex> varc=new ArrayList<>();
 	ArrayList<unit> stack1=new ArrayList<>();
 	double resol=1e-12;
 	public program() {}
 	public program(program pr) {
-		ArrayList<String> li = new ArrayList<>(pr.var.keySet());
-		for(int i=0;i<li.size();i++) var.put(li.get(i),new complex(pr.var.get(li.get(i))));
+		int vks=pr.vark.size();
+		for(int i=0;i<vks;i++) {vark.add(pr.vark.get(i));varc.add(new complex(pr.varc.get(i)));}
 		resol=pr.resol;
 	}
 	public void setresolution(double v) {resol=v;}
@@ -393,9 +380,11 @@ public class program{
 		else if(name.equals("true")) return new complex(true);
 		else if(name.equals("false")) return new complex(false);
 		else {
-			complex tmp=var.get(name);
+			complex tmp=null; int vks=vark.size();
+			for(int i=0;i<vks;i++) 
+				if(vark.get(i).equals(name)) { tmp=varc.get(i);break;}
 			if(tmp==null) {
-				complex newc=new complex(0,0); var.put(name,newc); return newc;
+				complex newc=new complex(0,0); vark.add(name);varc.add(newc); return newc;
 			} else return tmp;
 		}
 	}
@@ -403,7 +392,7 @@ public class program{
 		if(name==null) throw new Exception("wrong equation");
 		else if(name.equals("pi")||name.equals("e")||name.equals("NaN")||
 				name.equals("true")||name.equals("false")) throw new Exception("wrong equation-cannot modify rvalue");
-		else var.put(name, new complex(val));
+		else {vark.add(name); varc.add(new complex(val));}
 	}
 	public static equation compile(String in) throws Exception{//slow
 		ArrayList<unit> temp=new ArrayList<>();
@@ -588,7 +577,7 @@ public class program{
 				if(sz>-1) {
 					unit tm1=temp.get(sz);
 					if(tm1.o==null ||tm1.o==-1 || tm1.o==1 ||tm1.o==11||tm1.o==12) {
-						temp.add(new unit(new complex(0,0),null,null));temp.add(new unit(null,null,171));
+						temp.add(new unit(new complex(Double.NaN,Double.NaN),null,null));temp.add(new unit(null,null,171));
 					}
 				}
 				in=in.substring(1);
@@ -621,7 +610,7 @@ public class program{
 				unit tmp3;
 				while(!((tmp3=stack.get(stack.size()-1)).o==-2)) {
 					temp2.add(tmp3);
-					if(stack.size()==0) throw new Exception("wrong equation-parenthesis mismatch");
+					if(stack.size()<=1) throw new Exception("wrong equation-parenthesis mismatch");
 					else stack.remove(stack.size()-1);
 				}
 				if(stack.size()==0) throw new Exception("wrong equation-parenthesis mismatch");
@@ -679,55 +668,21 @@ public class program{
 		else throw new Exception("wrong equation-unknown error");
 	}
 	static boolean isfunction(String d) {
-		if(d.equals("pow")) return true;
-		else if(d.equals("exp")) return true;
-		else if(d.equals("log")) return true;
-		else if(d.equals("sqrt")) return true;
-		else if(d.equals("ln")) return true;
-		else if(d.equals("cbrt")) return true;
-		else if(d.equals("abs")) return true;
-		else if(d.equals("arg")) return true;
-		else if(d.equals("conj")) return true;
-		else if(d.equals("min")) return true;
-		else if(d.equals("max")) return true;
-		else if(d.equals("floor")) return true;
-		else if(d.equals("ceil")) return true;
-		else if(d.equals("sin")) return true;
-		else if(d.equals("cos")) return true;
-		else if(d.equals("tan")) return true;
-		else if(d.equals("sec")) return true;
-		else if(d.equals("csc")) return true;
-		else if(d.equals("cot")) return true;
-		else if(d.equals("asin")) return true;
-		else if(d.equals("acos")) return true;
-		else if(d.equals("atan")) return true;
-		else if(d.equals("atan2")) return true;
-		else if(d.equals("asec")) return true;
-		else if(d.equals("acsc")) return true;
-		else if(d.equals("acot")) return true;
-		else if(d.equals("sinh")) return true;
-		else if(d.equals("cosh")) return true;
-		else if(d.equals("tanh")) return true;
-		else if(d.equals("sech")) return true;
-		else if(d.equals("csch")) return true;
-		else if(d.equals("coth")) return true;
-		else if(d.equals("asinh")) return true;
-		else if(d.equals("acosh")) return true;
-		else if(d.equals("atanh")) return true;
-		else if(d.equals("asech")) return true;
-		else if(d.equals("acsch")) return true;
-		else if(d.equals("acoth")) return true;
-		else if(d.equals("fact")) return true;
-		else if(d.equals("round")) return true;
-		else if(d.equals("rand")) return true;
-		else if(d.equals("isnan")) return true;
-		else if(d.equals("real")) return true;
-		else if(d.equals("imag")) return true;
-		else return false;
+		return d.equals("pow")||d.equals("exp")||d.equals("sqrt")||d.equals("cbrt")||d.equals("ln")||
+				d.equals("log")||d.equals("abs")||d.equals("arg")||d.equals("conj")||d.equals("real")||
+				d.equals("imag")||d.equals("min")||d.equals("max")||d.equals("gcd")||d.equals("lcm")||
+				d.equals("floor")||d.equals("ceil")||d.equals("round")||d.equals("fact")||d.equals("rand")||
+				d.equals("isnan")||d.equals("isreal")||d.equals("sin")||d.equals("cos")||d.equals("tan")||
+				d.equals("sec")||d.equals("csc")||d.equals("cot")||d.equals("asin")||d.equals("acos")||
+				d.equals("atan")||d.equals("atan2")||d.equals("asec")||d.equals("acsc")||d.equals("acot")||
+				d.equals("sinh")||d.equals("cosh")||d.equals("tanh")||d.equals("sech")||d.equals("csch")||
+				d.equals("coth")||d.equals("asinh")||d.equals("acosh")||d.equals("atanh")||d.equals("asech")||
+				d.equals("acsch")||d.equals("acoth");
 	}
 	static void valid(equation in) throws Exception{
 		ArrayList<unit> stack1=new ArrayList<>();
-		for(int i=0;i<in.eq.size();i++) {
+		int eqs=in.eq.size();
+		for(int i=0;i<eqs;i++) {
 			unit tmp=in.eq.get(i);
 			if(tmp.o==null) stack1.add(tmp);
 			else {
@@ -759,8 +714,7 @@ public class program{
 				else if(tmp.o==151 || tmp.o==152) throw new Exception("wrong equation-wrong ternary equation");
 				else if(tmp.o==153) {//?:
 					if((stacksize=stack1.size())<3) throw new Exception("wrong equation-incomplete formula");
-					unit v1=stack1.get(stacksize-1);unit v2=stack1.get(stacksize-2);
-					if(v2.t!=null) {stack1.remove(stacksize-1);stack1.remove(stacksize-3);}
+					if(stack1.get(stacksize-2).t!=null) {stack1.remove(stacksize-1);stack1.remove(stacksize-3);}
 					else {stack1.remove(stacksize-2);stack1.remove(stacksize-3);}
 				}
 				else if(154<=tmp.o&&tmp.o<=165) {//**=
@@ -781,28 +735,41 @@ public class program{
 	}
 	public String solve(equation in) throws Exception {
 		stack1.clear();
-		for(int i=0;i<in.eq.size();i++) {
+		int eqs=in.eq.size();
+		for(int i=0;i<eqs;i++) {
 			unit tmp=in.eq.get(i);
 			if(tmp.o==null) stack1.add(new unit(tmp));
 			else {
 				int stacksize;
 				if(tmp.o==1) {//function call
-					stacksize=stack1.size(); unit v=stack1.get(stacksize-1); complex val=v.c; 
-					if(val==null) val=get(v.t);
-					complex result=null;//v.commastack.get(1...), val
+                    stacksize=stack1.size(); unit v=stack1.get(stacksize-1); complex val=v.c;
+                    if(val==null) val=get(v.t);
+                    complex result=null;//v.commastack.get(1...), val
 					if(tmp.t.equals("$max")) {
-						double max=val.r;
-						if(v.commalog!=null) for(int j=1;j<v.commalog.size();j++) {
-							double tm=v.commalog.get(j).r; if(max<tm) max=tm;
+						complex temp=null;
+						if(val.isreal()) temp=val;
+						if(v.commalog!=null) {
+							int js=v.commalog.size();
+							for(int j=1;j<js;j++) {
+								complex tm=v.commalog.get(j); 
+								if(tm.isreal()&&(temp==null||temp.r<tm.r)) temp=tm;
+							}
 						}
-						result=new complex(max,0);
+						if(temp==null) result=new complex(Double.NaN,Double.NaN);
+						else result=temp;
 					}
 					else if(tmp.t.equals("$min")) {
-						double min=val.r;
-						if(v.commalog!=null) for(int j=1;j<v.commalog.size();j++) {
-							double tm=v.commalog.get(j).r; if(min>tm) min=tm;
+						complex temp=null;
+						if(val.isreal()) temp=val;
+						if(v.commalog!=null) {
+							int js=v.commalog.size();
+							for(int j=1;j<js;j++) {
+								complex tm=v.commalog.get(j); 
+								if(tm.isreal()&&(temp==null||temp.r>tm.r)) temp=tm;
+							}
 						}
-						result=new complex(min,0);
+						if(temp==null) result=new complex(Double.NaN,Double.NaN);
+						else result=temp;
 					}
 					else if(tmp.t.equals("$rand")) { result=new complex(Math.random(),0);}
 					else if(tmp.t.equals("$isnan")) {
@@ -810,6 +777,7 @@ public class program{
 							result=new complex(true);
 						else result=new complex(false);
 					}
+					else if(tmp.t.equals("$isreal")) {result=new complex(val.isreal());}
 					else if(tmp.t.equals("$round")) {
 						result=new complex();result.r=Math.round(val.r);result.i=Math.round(val.i);
 					}
@@ -818,6 +786,30 @@ public class program{
 					}
 					else if(tmp.t.equals("$ceil")) {
 						result=new complex();result.r=Math.ceil(val.r);result.i=Math.ceil(val.i);
+					}
+					else if(tmp.t.equals("$gcd")) {
+						result=new complex(Double.NaN,Double.NaN);
+						if(v.commalog!=null&&v.commalog.size()>1) {
+							complex val2=v.commalog.get(1);
+							if(val.isreal() && val2.isreal()) {
+								complex v1r=val.round();complex v2r=val2.round();
+								if(v1r.isequal(resol,val)&&v2r.isequal(resol, val2)) {
+									result.r=(double)ints.gcd((int)v1r.r, (int)v2r.r);result.i=0;
+								}
+							}
+						}
+					}
+					else if(tmp.t.equals("$lcm")) {
+						result=new complex(Double.NaN,Double.NaN);
+						if(v.commalog!=null&&v.commalog.size()>1) {
+							complex val2=v.commalog.get(1);
+							if(val.isreal() && val2.isreal()) {
+								complex v1r=val.round();complex v2r=val2.round();
+								if(v1r.isequal(resol,val)&&v2r.isequal(resol, val2)) {
+									result.r=(double)ints.lcm((int)v1r.r, (int)v2r.r);result.i=0;
+								}
+							}
+						}
 					}
 					else if(tmp.t.equals("$real")) {result=new complex();result.r=val.r;result.i=0;}
 					else if(tmp.t.equals("$imag")) {result=new complex();result.r=val.i;result.i=0;}
@@ -831,6 +823,7 @@ public class program{
 					else if(tmp.t.equals("$pow")) {
 						result=new complex();
 						if(v.commalog!=null && v.commalog.size()>1) result.store_pow(v.commalog.get(1), val);
+						else result=val.exp();
 					}
 					else if(tmp.t.equals("$log")) {
 						result=new complex();
@@ -1205,7 +1198,7 @@ public class program{
 		if(stack1.size()==0) return "";
 		else {
 			unit res=stack1.get(0); 
-			if(res.c!=null) return res.c.tostr(); else return get(res.t).tostr();
+			if(res.c!=null) return res.c.tostr(resol); else return get(res.t).tostr(resol);
 		}
 	}
 	public String compileandsolve(String in) throws Exception{
