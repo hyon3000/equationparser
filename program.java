@@ -253,7 +253,7 @@ class equation{
     public equation(ArrayList<unit> q) {eq=q;}
     @Override
     public String toString() {
-        try {String ret="";int s=eq.size(); for(int i=0;i<s;i++) ret+=eq.get(i).toString(); return ret;}
+        try {String ret="";int s=eq.size(); for(int i=0;i<s;i++) ret+=eq.get(i).tostr(); return ret;}
         catch(Exception E) { return E.toString();}
     }
 }
