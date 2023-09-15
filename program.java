@@ -1,6 +1,8 @@
 package test;
 
 import java.util.ArrayList;
+import java.util.StringTokenizer;
+
 class complex{
     double r,i;
     boolean isbool;
@@ -17,6 +19,7 @@ class complex{
         }
         isbool=false;
     }
+    public complex(double v1, double v2, boolean v3) {r=v1;i=v2;isbool=v3;}
     String tostr(double res) {
         if(Double.isInfinite(r) || Double.isNaN(r)||Double.isInfinite(r) || Double.isNaN(r)) return "NaN";
         String ret="";
@@ -566,7 +569,7 @@ public class program{
                 d.equals("atan")||d.equals("atan2")||d.equals("asec")||d.equals("acsc")||d.equals("acot")||
                 d.equals("sinh")||d.equals("cosh")||d.equals("tanh")||d.equals("sech")||d.equals("csch")||
                 d.equals("coth")||d.equals("asinh")||d.equals("acosh")||d.equals("atanh")||d.equals("asech")||
-                d.equals("acsch")||d.equals("acoth");
+                d.equals("acsch")||d.equals("acoth")||d.equals("reset");
     }
     static void valid(equation in) throws Exception{
         ArrayList<unit> stack1=new ArrayList<>();
@@ -623,6 +626,9 @@ public class program{
             }
         }
     }
+    void resetprog(){
+        vark.clear(); varc.clear();
+    }
     public String solve(equation in) throws Exception {
         stack1.clear();
         int eqs=in.eq.size();
@@ -662,6 +668,7 @@ public class program{
                         else result=temp;
                     }
                     else if(tmp.t.equals("$rand")) { result=new complex(Math.random(),0);}
+                    else if(tmp.t.equals("$reset")) { resetprog();result=new complex(0,0);}
                     else if(tmp.t.equals("$isnan")) {
                         if(Double.isNaN(val.r)||Double.isNaN(val.r)||Double.isNaN(val.r)||Double.isNaN(val.r))
                             result=new complex(true);
@@ -1092,5 +1099,19 @@ public class program{
     }
     public String compileandsolve(String in) throws Exception{
         return solve(compile(in));
+    }
+    public String toString(){
+        String ret="";
+        for(int i=0,vars=vark.size();i<vars;i++){
+            ret+=vark.get(i)+"|"+varc.get(i).r+"|"+varc.get(i).i+"|"+varc.get(i).isbool+"|";
+        }
+        return ret;
+    }
+    public void fromString(String str){
+        vark.clear();varc.clear();
+        StringTokenizer t=new StringTokenizer(str,"|");
+        while(t.hasMoreTokens()){
+            vark.add(t.nextToken());varc.add(new complex(Double.parseDouble(t.nextToken()),Double.parseDouble(t.nextToken()),Boolean.parseBoolean(t.nextToken())));
+        }
     }
 }
